@@ -1,37 +1,38 @@
-from sqlalchemy.orm import Session
-from app.models.job import Job
-from app.schemas.job import JobCreate, JobUpdate
 from datetime import datetime
 
+from sqlalchemy.orm import Session
 
-def get_jobs(db: Session):
-    """Obtener todas las ofertas laborales"""
+from app.models.job import Job
+
+
+def get_all(db: Session):
+    """Obtener todas las ofertas laborales."""
     return db.query(Job).all()
 
 
-def get_job_by_id(db: Session, job_id: int):
-    """Obtener una oferta laboral por ID"""
+def get_by_id(db: Session, job_id: int):
+    """Obtener una oferta laboral por ID."""
     return db.query(Job).filter(Job.id == job_id).first()
 
 
-def get_job_by_url(db: Session, url: str):
-    """Obtener una oferta laboral por URL"""
+def get_by_url(db: Session, url: str):
+    """Obtener una oferta laboral por URL."""
     return db.query(Job).filter(Job.url == url).first()
 
 
-def create_job(db: Session, job_data: JobCreate):
-    """Crear una nueva oferta laboral"""
+def create(db: Session, job_data: dict):
+    """Crear una nueva oferta laboral."""
     db_job = Job(
-        title=job_data.title,
-        url=job_data.url,
-        company=job_data.company,
-        location=job_data.location,
-        remote=job_data.remote if job_data.remote is not None else False,
-        portal=job_data.portal,
-        stack=job_data.stack,
-        match_score=job_data.match_score if job_data.match_score is not None else 0,
-        status=job_data.status if job_data.status is not None else "pending",
-        notes=job_data.notes,
+        title=job_data["title"],
+        url=job_data["url"],
+        company=job_data.get("company"),
+        location=job_data.get("location"),
+        remote=job_data.get("remote", False),
+        portal=job_data.get("portal"),
+        stack=job_data.get("stack"),
+        match_score=job_data.get("match_score", 0),
+        status=job_data.get("status", "saved"),
+        notes=job_data.get("notes"),
     )
     db.add(db_job)
     db.commit()
@@ -39,13 +40,8 @@ def create_job(db: Session, job_data: JobCreate):
     return db_job
 
 
-def update_job(db: Session, job_id: int, job_data: JobUpdate):
-    """Actualizar una oferta laboral"""
-    db_job = get_job_by_id(db, job_id)
-    if not db_job:
-        return None
-
-    update_data = job_data.model_dump(exclude_unset=True)
+def update(db: Session, db_job: Job, update_data: dict):
+    """Actualizar una oferta laboral."""
     update_data["updated_at"] = datetime.utcnow()
 
     for field, value in update_data.items():
@@ -57,12 +53,7 @@ def update_job(db: Session, job_id: int, job_data: JobUpdate):
     return db_job
 
 
-def delete_job(db: Session, job_id: int):
-    """Eliminar una oferta laboral"""
-    db_job = get_job_by_id(db, job_id)
-    if not db_job:
-        return False
-
+def delete(db: Session, db_job: Job):
+    """Eliminar una oferta laboral."""
     db.delete(db_job)
     db.commit()
-    return True

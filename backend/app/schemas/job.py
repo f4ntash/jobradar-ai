@@ -1,6 +1,10 @@
-from pydantic import BaseModel
-from typing import Optional
+from pydantic import BaseModel, ConfigDict
+from typing import Literal, Optional
 from datetime import datetime
+
+
+JobStatus = Literal["saved", "applied", "interview", "rejected", "offer"]
+ALLOWED_JOB_STATUSES = ("saved", "applied", "interview", "rejected", "offer")
 
 
 class JobCreate(BaseModel):
@@ -12,7 +16,7 @@ class JobCreate(BaseModel):
     portal: Optional[str] = None
     stack: Optional[str] = None
     match_score: Optional[int] = None
-    status: Optional[str] = None
+    status: Optional[str] = "saved"
     notes: Optional[str] = None
 
 
@@ -30,6 +34,8 @@ class JobUpdate(BaseModel):
 
 
 class JobResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     title: str
     company: Optional[str] = None
@@ -39,14 +45,10 @@ class JobResponse(BaseModel):
     portal: Optional[str] = None
     stack: Optional[str] = None
     match_score: int
-    status: str
+    status: JobStatus
     notes: Optional[str] = None
     created_at: datetime
     updated_at: Optional[datetime] = None
-
-    class Config:
-        from_attributes = True
-
 
 class SearchRequest(BaseModel):
     query: str

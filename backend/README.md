@@ -39,11 +39,56 @@ Planned frontend:
 
 ## Current Status
 
-JobRadar AI is in Sprint 0: Project Foundation.
+JobRadar AI is in Sprint 1: Foundation.
 
-The current backend contains an initial FastAPI API with job CRUD endpoints, job search endpoints, a SQLite database, SQLAlchemy models, Pydantic schemas, repository functions, routers, and scraper services.
+The current backend contains an initial FastAPI API with job CRUD endpoints, job search endpoints, a SQLite database, SQLAlchemy models, Pydantic schemas, repository functions, routers, and services.
 
-The repository is being professionalized before adding new features.
+The Jobs feature now routes CRUD behavior through a service layer, keeps repositories focused on database access, and validates job status values.
+
+The repository is being cleaned up and documented before adding new product features.
+
+## DevOS
+
+DevOS is the internal developer workflow CLI for JobRadar AI.
+
+It helps with the end-of-sprint workflow:
+
+- Shows Git branch and status.
+- Prevents working directly on `main`.
+- Runs tests.
+- Collects sprint notes.
+- Generates the daily developer journal.
+- Generates a LinkedIn draft.
+- Updates the static developer journal website.
+- Guides staging, commits, merges, and pushes with explicit confirmation prompts.
+
+Run DevOS from the backend directory:
+
+```bash
+python tools/devos.py
+```
+
+DevOS never publishes anything and does not push without explicit confirmation.
+
+## Project Structure
+
+```text
+app/
+  core/          Database setup and shared backend infrastructure
+  models/        SQLAlchemy models
+  repositories/  Database access functions
+  routers/       FastAPI route handlers
+  schemas/       Pydantic request and response schemas
+  services/      Business logic and orchestration
+content/
+  daily/         Markdown developer journal entries
+  linkedin/      LinkedIn draft posts
+docs/            Project documentation
+public/
+  dev-journal/   Static developer journal website
+tests/           Backend API tests
+tools/           DevOS CLI and developer workflow helpers
+```
 
 ## How to Run the Backend
 
@@ -101,6 +146,14 @@ Jobs:
 - `POST /jobs/search` - Search for jobs across supported sources.
 - `POST /jobs/search-and-save` - Search for jobs and save new results.
 
+Allowed job statuses:
+
+- `saved`
+- `applied`
+- `interview`
+- `rejected`
+- `offer`
+
 ## Future Frontend
 
 The future frontend should be a professional SaaS-style application focused on daily job-search operations. It should prioritize clarity, speed, and practical workflows over marketing pages.
@@ -126,4 +179,3 @@ Project documentation lives in `docs/`:
 - `docs/CHANGELOG.md`
 - `docs/DECISIONS.md`
 - `docs/AI_CONTEXT.md`
-
