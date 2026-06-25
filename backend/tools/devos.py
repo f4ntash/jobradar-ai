@@ -2,14 +2,14 @@
 
 from __future__ import annotations
 
+import sys
 from pathlib import Path
 
-import git_flow
-import journal
-import linkedin
-import prompts
-import website
-from utils import ROOT, ask_yes_no, print_command_output, relative_path, run_command
+if __package__ is None or __package__ == "":
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from tools import git_flow, journal, linkedin, prompts, website
+from tools.utils import ROOT, ask_yes_no, print_command_output, relative_path, run_command
 
 
 def print_header() -> None:

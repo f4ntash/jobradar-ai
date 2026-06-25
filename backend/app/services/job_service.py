@@ -59,8 +59,10 @@ def delete_job(db: Session, job_id: int):
 
 def _validate_status(status: str | None) -> None:
     if status not in ALLOWED_JOB_STATUSES:
-        allowed = ", ".join(ALLOWED_JOB_STATUSES)
-        raise InvalidJobStatusError(f"Invalid status. Allowed statuses: {allowed}")
+        allowed = "\n".join(ALLOWED_JOB_STATUSES)
+        raise InvalidJobStatusError(
+            f"Invalid status '{status}'.\nAllowed statuses:\n{allowed}"
+        )
 
 
 def _url_belongs_to_another_job(db: Session, url: str | None, job_id: int) -> bool:

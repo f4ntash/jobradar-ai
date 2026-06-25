@@ -4,28 +4,28 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from utils import LINKEDIN_DIR, slugify
+from tools.utils import LINKEDIN_DIR, slugify
 
 
 def linkedin_markdown(data: dict[str, str]) -> str:
     return f"""Hoy fue el Day {data["day"]} construyendo JobRadar AI.
 
-Trabaje en: {data["changes"]}
+Trabajé en: {data["changes"]}
 
-El objetivo del dia era: {data["goal"]}
+El objetivo del día era: {data["goal"]}
 
-La parte mas importante no fue solo avanzar, sino entender esto: {data["learnings"]}
+La parte más importante no fue solo avanzar, sino entender esto: {data["learnings"]}
 
-Tambien hubo algo que no salio perfecto: {data["went_wrong"]}
+También hubo algo que no salió perfecto: {data["went_wrong"]}
 
-Tecnologias y herramientas usadas:
+Tecnologías y herramientas usadas:
 - {data["technologies"]}
 - AI tools: {data["ai_tools"]}
 - Programas/tools: {data["programs"]}
 
-Lo proximo: {data["next_step"]}
+Lo próximo: {data["next_step"]}
 
-Estoy construyendo este proyecto en publico, con foco en aprender bien, documentar el proceso y convertir JobRadar AI en un producto real para desarrolladores que buscan trabajo.
+Estoy construyendo este proyecto en público, con foco en aprender bien, documentar el proceso y convertir JobRadar AI en un producto real para desarrolladores que buscan trabajo.
 
 #BuildInPublic #Python #FastAPI #SoftwareDevelopment #OpenSource #JobSearch #LearningInPublic
 """

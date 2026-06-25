@@ -16,7 +16,7 @@ class JobCreate(BaseModel):
     portal: Optional[str] = None
     stack: Optional[str] = None
     match_score: Optional[int] = None
-    status: Optional[JobStatus] = "saved"
+    status: Optional[str] = "saved"
     notes: Optional[str] = None
 
 
@@ -29,7 +29,7 @@ class JobUpdate(BaseModel):
     portal: Optional[str] = None
     stack: Optional[str] = None
     match_score: Optional[int] = None
-    status: Optional[JobStatus] = None
+    status: Optional[str] = None
     notes: Optional[str] = None
 
 

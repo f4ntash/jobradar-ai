@@ -6,7 +6,7 @@ import html
 import re
 from pathlib import Path
 
-from utils import DAILY_DIR, JOURNAL_INDEX
+from tools.utils import DAILY_DIR, JOURNAL_INDEX
 
 
 def section_value(text: str, heading: str) -> str:

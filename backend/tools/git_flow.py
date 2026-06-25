@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from utils import ask_yes_no, print_command_output, run_command
+from tools.utils import ask_yes_no, print_command_output, run_command
 
 
 def current_branch() -> str:

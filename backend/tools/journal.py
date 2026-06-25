@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from utils import DAILY_DIR, slugify
+from tools.utils import DAILY_DIR, slugify
 
 
 def daily_markdown(data: dict[str, str], commit: str) -> str:

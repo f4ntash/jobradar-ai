@@ -15,12 +15,15 @@ JOURNAL_INDEX = ROOT / "public" / "dev-journal" / "index.html"
 
 def run_command(command: list[str], check: bool = False) -> subprocess.CompletedProcess:
     """Run a command from the project root."""
+    # Commands are passed as argument lists with shell=False, so user input is
+    # never interpreted by a shell. This keeps Git prompts safe and simple.
     return subprocess.run(
         command,
         cwd=ROOT,
         text=True,
         capture_output=True,
         check=check,
+        shell=False,
     )
 
 
