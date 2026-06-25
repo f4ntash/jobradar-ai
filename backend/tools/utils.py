@@ -14,9 +14,17 @@ JOURNAL_INDEX = ROOT / "public" / "dev-journal" / "index.html"
 
 
 def run_command(command: list[str], check: bool = False) -> subprocess.CompletedProcess:
-    """Run a command from the project root."""
-    # Commands are passed as argument lists with shell=False, so user input is
-    # never interpreted by a shell. This keeps Git prompts safe and simple.
+    """Run an allowed command from the project root."""
+    allowed_commands = {"git", "python"}
+
+    if not command:
+        raise ValueError("Command cannot be empty.")
+
+    executable = command[0]
+
+    if executable not in allowed_commands:
+        raise ValueError(f"Command not allowed: {executable}")
+
     return subprocess.run(
         command,
         cwd=ROOT,
