@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.database import engine, Base
-from app.routers import job_search, jobs
+from app.routers import job_ingestion, job_search, jobs
 
 # Crear las tablas
 Base.metadata.create_all(bind=engine)
@@ -24,6 +24,7 @@ app.add_middleware(
 
 # Incluir routers
 app.include_router(job_search.router)
+app.include_router(job_ingestion.router)
 app.include_router(jobs.router)
 
 

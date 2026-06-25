@@ -53,6 +53,7 @@ class JobResponse(BaseModel):
 
 class SearchRequest(BaseModel):
     query: str
+    location: Optional[str] = None
     max_results: Optional[int] = 20
 
 
