@@ -13,15 +13,16 @@ Current backend responsibilities:
 - Persist job records.
 - Search external job sources.
 - Keep job persistence logic separated from route handlers.
+- Keep Jobs business rules in a service layer.
 
 Current structure:
 
 - `app/main.py` initializes the FastAPI application, CORS, database tables, and routers.
-- `app/routers/` contains API route modules.
-- `app/repositories/` contains database access functions.
+- `app/routers/` contains API route modules. CRUD routes call services, not repositories.
+- `app/repositories/` contains database access functions only.
 - `app/models/` contains SQLAlchemy models.
 - `app/schemas/` contains Pydantic schemas.
-- `app/services/` contains service-style modules such as scraping/search logic.
+- `app/services/` contains application behavior such as job business rules and search orchestration.
 - `app/core/` contains infrastructure setup such as database configuration.
 
 ## Frontend
@@ -62,12 +63,17 @@ Examples:
 
 - Job search orchestration.
 - Scraping adapters.
+- Duplicate job URL validation.
+- Not-found handling.
+- Job status validation.
 - AI matching.
 - Resume analysis.
 - Email workflow coordination.
 - Notification and reminder logic.
 
 Services should be small, testable, and focused on use cases.
+
+The current Jobs feature uses `app/services/job_service.py` as the boundary for saved job business rules. Search behavior is isolated in `app/services/job_search_service.py` and exposed through a separate search router while keeping the existing `/jobs/search` and `/jobs/search-and-save` paths stable.
 
 ## Repositories
 
@@ -82,6 +88,15 @@ They should:
 
 Repositories should not become large service objects. They are data-access boundaries.
 
+The Jobs repository exposes simple persistence operations:
+
+- `get_all`
+- `get_by_id`
+- `get_by_url`
+- `create`
+- `update`
+- `delete`
+
 ## Routers
 
 Routers should define the HTTP interface.
@@ -94,6 +109,8 @@ They should:
 - Convert application errors into HTTP responses.
 
 Routers should not contain complex business logic.
+
+Jobs CRUD routes should call the service layer. Search routes should remain isolated from saved-job CRUD routes.
 
 ## Future Architecture
 
@@ -147,4 +164,3 @@ Clean Architecture helps protect the product from becoming tightly coupled to fr
 For JobRadar AI, this matters because the product is expected to grow into a long-term SaaS-quality system.
 
 The architecture should make it possible to change implementation details without rewriting the core product behavior.
-

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, func
+from sqlalchemy import Column, Integer, String, Boolean, DateTime
 from app.core.database import Base
 from datetime import datetime
 
@@ -15,7 +15,7 @@ class Job(Base):
     portal = Column(String, nullable=True)
     stack = Column(String, nullable=True)
     match_score = Column(Integer, default=0)
-    status = Column(String, default="pending")
+    status = Column(String, default="saved")
     notes = Column(String, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, nullable=True)
