@@ -39,11 +39,11 @@ Planned frontend:
 
 ## Current Status
 
-JobRadar AI is in Sprint 1: Foundation.
+JobRadar AI is in Sprint 2: Jobs domain stabilization.
 
 The current backend contains an initial FastAPI API with job CRUD endpoints, job search endpoints, a SQLite database, SQLAlchemy models, Pydantic schemas, repository functions, routers, and services.
 
-The Jobs feature now routes CRUD behavior through a service layer, keeps repositories focused on database access, and validates job status values.
+The Jobs feature routes CRUD behavior through a service layer, keeps repositories focused on database access, validates job status values, and has basic REST coverage for create, read, update, delete, duplicate URL, and invalid status behavior.
 
 The repository is being cleaned up and documented before adding new product features.
 
@@ -145,6 +145,14 @@ Jobs:
 - `DELETE /jobs/{job_id}` - Delete a saved job.
 - `POST /jobs/search` - Search for jobs across supported sources.
 - `POST /jobs/search-and-save` - Search for jobs and save new results.
+
+Jobs behavior:
+
+- New jobs default to `saved` status.
+- Job URLs must be unique.
+- Missing jobs return `404`.
+- Duplicate URLs return `400`.
+- Invalid statuses return `422`.
 
 Allowed job statuses:
 

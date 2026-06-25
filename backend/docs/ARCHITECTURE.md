@@ -18,8 +18,8 @@ Current backend responsibilities:
 Current structure:
 
 - `app/main.py` initializes the FastAPI application, CORS, database tables, and routers.
-- `app/routers/` contains API route modules. CRUD routes call services, not repositories.
-- `app/repositories/` contains database access functions only.
+- `app/routers/` contains API route modules. Jobs CRUD routes call services, not repositories.
+- `app/repositories/` contains database access functions only and does not own business rules.
 - `app/models/` contains SQLAlchemy models.
 - `app/schemas/` contains Pydantic schemas.
 - `app/services/` contains application behavior such as job business rules and search orchestration.
@@ -73,7 +73,7 @@ Examples:
 
 Services should be small, testable, and focused on use cases.
 
-The current Jobs feature uses `app/services/job_service.py` as the boundary for saved job business rules. Search behavior is isolated in `app/services/job_search_service.py` and exposed through a separate search router while keeping the existing `/jobs/search` and `/jobs/search-and-save` paths stable.
+The current Jobs feature uses `app/services/job_service.py` as the boundary for saved job business rules. It handles not-found jobs, duplicate URLs, default status assignment, and allowed status validation. Search behavior is isolated in `app/services/job_search_service.py` and exposed through a separate search router while keeping the existing `/jobs/search` and `/jobs/search-and-save` paths stable.
 
 ## Repositories
 
@@ -105,7 +105,7 @@ They should:
 
 - Declare endpoints.
 - Validate inputs through schemas.
-- Call services or repositories.
+- Call services.
 - Convert application errors into HTTP responses.
 
 Routers should not contain complex business logic.

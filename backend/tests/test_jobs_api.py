@@ -32,7 +32,7 @@ def setup_function():
     Base.metadata.create_all(bind=engine)
 
 
-def test_create_job():
+def test_create_job_with_default_status():
     response = client.post(
         "/jobs",
         json={"title": "Backend Developer", "url": "https://example.com/job-1"},
@@ -42,6 +42,34 @@ def test_create_job():
     data = response.json()
     assert data["title"] == "Backend Developer"
     assert data["status"] == "saved"
+
+
+def test_create_job_accepts_valid_non_default_status():
+    response = client.post(
+        "/jobs",
+        json={
+            "title": "Backend Developer",
+            "url": "https://example.com/job-1",
+            "status": "interview",
+        },
+    )
+
+    assert response.status_code == 201
+    assert response.json()["status"] == "interview"
+
+
+def test_create_job_rejects_invalid_status():
+    response = client.post(
+        "/jobs",
+        json={
+            "title": "Backend Developer",
+            "url": "https://example.com/job-1",
+            "status": "pending",
+        },
+    )
+
+    assert response.status_code == 422
+    assert "Invalid status 'pending'." in response.json()["detail"]
 
 
 def test_list_jobs_returns_empty_list():
@@ -70,7 +98,7 @@ def test_list_jobs_after_creating_jobs():
     assert data[1]["title"] == "Python Developer"
 
 
-def test_reject_duplicate_url():
+def test_create_job_rejects_duplicate_url():
     payload = {"title": "Backend Developer", "url": "https://example.com/job-1"}
 
     assert client.post("/jobs", json=payload).status_code == 201
@@ -79,7 +107,7 @@ def test_reject_duplicate_url():
     assert response.status_code == 400
 
 
-def test_get_job_by_id():
+def test_get_job_by_id_returns_job():
     created = client.post(
         "/jobs",
         json={"title": "Backend Developer", "url": "https://example.com/job-1"},
@@ -97,7 +125,7 @@ def test_get_job_by_id_returns_404_when_missing():
     assert response.status_code == 404
 
 
-def test_update_status():
+def test_patch_job_updates_status():
     created = client.post(
         "/jobs",
         json={"title": "Backend Developer", "url": "https://example.com/job-1"},
@@ -109,7 +137,7 @@ def test_update_status():
     assert response.json()["status"] == "applied"
 
 
-def test_reject_invalid_status():
+def test_patch_job_rejects_invalid_status():
     created = client.post(
         "/jobs",
         json={"title": "Backend Developer", "url": "https://example.com/job-1"},
@@ -122,7 +150,7 @@ def test_reject_invalid_status():
     assert "saved" in response.json()["detail"]
 
 
-def test_reject_null_status_update():
+def test_patch_job_rejects_null_status():
     created = client.post(
         "/jobs",
         json={"title": "Backend Developer", "url": "https://example.com/job-1"},
@@ -158,7 +186,7 @@ def test_delete_missing_job_returns_404():
     assert response.status_code == 404
 
 
-def test_reject_duplicate_url_on_update():
+def test_patch_job_rejects_duplicate_url():
     first = client.post(
         "/jobs",
         json={"title": "Backend Developer", "url": "https://example.com/job-1"},
