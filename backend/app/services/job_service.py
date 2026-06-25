@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 
 from app.repositories import jobs_repository
-from app.schemas.job import ALLOWED_JOB_STATUSES, JobCreate, JobUpdate
+from app.schemas.job import ALLOWED_JOB_STATUSES, DEFAULT_JOB_STATUS, JobCreate, JobUpdate
 
 
 class JobNotFoundError(Exception):
@@ -28,7 +28,7 @@ def get_job(db: Session, job_id: int):
 
 
 def create_job(db: Session, job_data: JobCreate):
-    status = job_data.status or "saved"
+    status = job_data.status or DEFAULT_JOB_STATUS
     _validate_status(status)
     if jobs_repository.get_by_url(db, job_data.url):
         raise DuplicateJobUrlError("This URL already exists in the database")

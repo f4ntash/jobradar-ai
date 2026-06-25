@@ -11,18 +11,19 @@ Current backend responsibilities:
 - Expose HTTP API endpoints.
 - Validate request and response data.
 - Persist job records.
-- Search external job sources.
+- Search external job sources through the search service.
 - Keep job persistence logic separated from route handlers.
 - Keep Jobs business rules in a service layer.
+- Keep manual ingestion normalization separate from saved-job CRUD routes.
 
 Current structure:
 
 - `app/main.py` initializes the FastAPI application, CORS, database tables, and routers.
-- `app/routers/` contains API route modules. CRUD routes call services, not repositories.
-- `app/repositories/` contains database access functions only.
+- `app/routers/` contains API route modules. Jobs CRUD routes call services, not repositories.
+- `app/repositories/` contains database access functions only and does not own business rules.
 - `app/models/` contains SQLAlchemy models.
 - `app/schemas/` contains Pydantic schemas.
-- `app/services/` contains application behavior such as job business rules and search orchestration.
+- `app/services/` contains application behavior such as job business rules, manual ingestion normalization, search result normalization, and search orchestration.
 - `app/core/` contains infrastructure setup such as database configuration.
 
 ## Frontend
@@ -73,7 +74,7 @@ Examples:
 
 Services should be small, testable, and focused on use cases.
 
-The current Jobs feature uses `app/services/job_service.py` as the boundary for saved job business rules. Search behavior is isolated in `app/services/job_search_service.py` and exposed through a separate search router while keeping the existing `/jobs/search` and `/jobs/search-and-save` paths stable.
+The current Jobs feature uses `app/services/job_service.py` as the boundary for saved job business rules. It handles not-found jobs, duplicate URLs, default status assignment, and allowed status validation. Manual ingestion is handled by `app/services/job_ingestion_service.py`, which normalizes raw input and converts it into the existing `JobCreate` schema before calling the saved-job service. Search behavior is isolated in `app/services/job_search_service.py`, which calls the configured provider wrapper. Get on Board is the primary LATAM-focused provider, while Remotive is a fallback when the primary provider returns no results. The search service normalizes results, skips invalid results, wraps provider failures, and saves jobs through the saved-job service.
 
 ## Repositories
 
@@ -105,12 +106,12 @@ They should:
 
 - Declare endpoints.
 - Validate inputs through schemas.
-- Call services or repositories.
+- Call services.
 - Convert application errors into HTTP responses.
 
 Routers should not contain complex business logic.
 
-Jobs CRUD routes should call the service layer. Search routes should remain isolated from saved-job CRUD routes.
+Jobs CRUD routes should call the service layer. Manual ingestion routes should stay HTTP-only and delegate normalization plus creation to the ingestion service. Search routes should stay HTTP-only and delegate provider access, normalization, duplicate handling, and save orchestration to the search service.
 
 ## Future Architecture
 

@@ -39,11 +39,11 @@ Planned frontend:
 
 ## Current Status
 
-JobRadar AI is in Sprint 1: Foundation.
+JobRadar AI is in Sprint 2: Jobs domain stabilization.
 
 The current backend contains an initial FastAPI API with job CRUD endpoints, job search endpoints, a SQLite database, SQLAlchemy models, Pydantic schemas, repository functions, routers, and services.
 
-The Jobs feature now routes CRUD behavior through a service layer, keeps repositories focused on database access, and validates job status values.
+The Jobs feature routes CRUD behavior through a service layer, keeps repositories focused on database access, validates job status values, supports controlled manual ingestion, normalizes search results, and has basic REST coverage for create, read, update, delete, duplicate URL, invalid status, ingestion, and search behavior.
 
 The repository is being cleaned up and documented before adding new product features.
 
@@ -141,10 +141,36 @@ Jobs:
 - `GET /jobs` - List saved jobs.
 - `GET /jobs/{job_id}` - Get a saved job by ID.
 - `POST /jobs` - Create a saved job.
+- `POST /jobs/ingest` - Create a saved job from manually provided raw job data.
 - `PATCH /jobs/{job_id}` - Update a saved job.
 - `DELETE /jobs/{job_id}` - Delete a saved job.
-- `POST /jobs/search` - Search for jobs across supported sources.
+- `GET /jobs/search?query=...&location=...` - Search for jobs across supported sources.
+- `POST /jobs/search` - Legacy search endpoint using a JSON body.
 - `POST /jobs/search-and-save` - Search for jobs and save new results.
+
+Jobs behavior:
+
+- New jobs default to `saved` status.
+- Job URLs must be unique.
+- Manual ingestion trims and normalizes simple string values before saving.
+- Search results are normalized before being returned or saved.
+- Search filtering is currently optimized for LATAM-friendly remote developer roles.
+- Search-and-save skips duplicate URLs instead of creating duplicate jobs.
+- The primary search provider is Get on Board's public jobs API, focused on LATAM tech roles.
+- Remotive is kept only as a fallback when the primary provider returns no results.
+- Missing jobs return `404`.
+- Duplicate URLs return `400`.
+- Invalid statuses return `422`.
+
+Search provider status:
+
+- The search service uses Get on Board as its primary external provider.
+- Remotive remains available as a fallback provider, but it does not run when Get on Board returns results.
+- Tests use mocked provider HTTP responses and do not depend on real websites.
+- Empty search responses mean no configured provider returned matching results after filtering and normalization.
+- Region filtering keeps LATAM, Americas, worldwide, global, and generally remote roles while excluding clearly restricted roles such as US-only or Europe-only jobs.
+- Technical filtering favors software and web development relevance for developer queries such as `React Developer`.
+- Provider calls and normalization counts are logged internally for debugging.
 
 Allowed job statuses:
 

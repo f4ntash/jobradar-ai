@@ -7,6 +7,7 @@ from app.schemas.job import (
     SearchAndSaveResponse,
 )
 from app.schemas.job_found import JobFound
+from app.schemas.job_ingestion import RawJobIngestion
 
 __all__ = [
     "JobCreate",
@@ -16,4 +17,5 @@ __all__ = [
     "SearchRequest",
     "SearchAndSaveResponse",
     "JobFound",
+    "RawJobIngestion",
 ]

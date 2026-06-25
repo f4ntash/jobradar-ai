@@ -5,6 +5,7 @@ from datetime import datetime
 
 JobStatus = Literal["saved", "applied", "interview", "rejected", "offer"]
 ALLOWED_JOB_STATUSES = ("saved", "applied", "interview", "rejected", "offer")
+DEFAULT_JOB_STATUS = "saved"
 
 
 class JobCreate(BaseModel):
@@ -16,7 +17,7 @@ class JobCreate(BaseModel):
     portal: Optional[str] = None
     stack: Optional[str] = None
     match_score: Optional[int] = None
-    status: Optional[str] = "saved"
+    status: Optional[str] = DEFAULT_JOB_STATUS
     notes: Optional[str] = None
 
 
@@ -52,6 +53,7 @@ class JobResponse(BaseModel):
 
 class SearchRequest(BaseModel):
     query: str
+    location: Optional[str] = None
     max_results: Optional[int] = 20
 
 
