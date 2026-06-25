@@ -41,7 +41,9 @@ Planned frontend:
 
 JobRadar AI is in Sprint 0: Project Foundation.
 
-The current backend contains an initial FastAPI API with job CRUD endpoints, job search endpoints, a SQLite database, SQLAlchemy models, Pydantic schemas, repository functions, routers, and scraper services.
+The current backend contains an initial FastAPI API with job CRUD endpoints, job search endpoints, a SQLite database, SQLAlchemy models, Pydantic schemas, repository functions, routers, and services.
+
+The Jobs feature now routes CRUD behavior through a service layer, keeps repositories focused on database access, and validates job status values.
 
 The repository is being professionalized before adding new features.
 
@@ -101,6 +103,14 @@ Jobs:
 - `POST /jobs/search` - Search for jobs across supported sources.
 - `POST /jobs/search-and-save` - Search for jobs and save new results.
 
+Allowed job statuses:
+
+- `saved`
+- `applied`
+- `interview`
+- `rejected`
+- `offer`
+
 ## Future Frontend
 
 The future frontend should be a professional SaaS-style application focused on daily job-search operations. It should prioritize clarity, speed, and practical workflows over marketing pages.
@@ -126,4 +136,3 @@ Project documentation lives in `docs/`:
 - `docs/CHANGELOG.md`
 - `docs/DECISIONS.md`
 - `docs/AI_CONTEXT.md`
-
